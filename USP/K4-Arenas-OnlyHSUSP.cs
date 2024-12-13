@@ -10,10 +10,10 @@ using Microsoft.Extensions.Logging;
 namespace K4ArenaOnlyHS;
 
 [MinimumApiVersion(205)]
-public class PluginK4ArenaOnlyHS : BasePlugin
+public class PluginK4ArenaOnlyHSUSP : BasePlugin
 {
     public static int RoundTypeID { get; private set; } = -1;
-    public override string ModuleName => "K4-Arenas Addon - OnlyHS-AK47";
+    public override string ModuleName => "K4-Arenas Addon - OnlyHS-USP";
     public override string ModuleAuthor => "Letaryat";
     public override string ModuleVersion => "1.0.0";
 
@@ -27,7 +27,7 @@ public class PluginK4ArenaOnlyHS : BasePlugin
 
         if (checkAPI != null)
         {
-            RoundTypeID = checkAPI.AddSpecialRound("OnlyHS-AK47", 1, true, RoundStart, RoundEnd);
+            RoundTypeID = checkAPI.AddSpecialRound("OnlyHS-USP", 1, true, RoundStart, RoundEnd);
         }
         else
             Logger.LogError("Failed to get shared API capability for K4-Arenas.");
@@ -61,10 +61,10 @@ public class PluginK4ArenaOnlyHS : BasePlugin
         t2 = team2;
 
         team1[0].GiveNamedItem(CsItem.Knife);
-        team1[0].GiveNamedItem("weapon_ak47");
+        team1[0].GiveNamedItem("weapon_usp_silencer");
 
         team2[0].GiveNamedItem(CsItem.Knife);
-        team2[0].GiveNamedItem("weapon_ak47");
+        team2[0].GiveNamedItem("weapon_usp_silencer");
         RegisterEventHandler<EventPlayerHurt>(OnHurt);
 
     }
