@@ -79,14 +79,8 @@ public class PluginK4ArenaOnlyHSScout : BasePlugin
         {
             if (@event.Hitgroup != 1)
             {
-                if (player!.PlayerPawn!.Value!.Health < 100)
-                {
-                    player.PlayerPawn.Value.Health += DmgHealth;
-                }
-                if (player!.PlayerPawn!.Value!.ArmorValue < 100)
-                {
-                    player.PlayerPawn.Value.ArmorValue += DmgArmor;
-                }
+                DmgHealth = 0;
+                DmgArmor = 0;
                 return HookResult.Continue;
             }
         }
