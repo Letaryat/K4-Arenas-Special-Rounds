@@ -9,12 +9,12 @@
 
   <ItemGroup>
 	  <Reference Include="CounterStrikeSharp.API" Version="1.0.284">
-		  <HintPath>CounterStrikeSharp.API.dll</HintPath>
+		  <HintPath>../CounterStrikeSharp.API.dll</HintPath>
 	  </Reference>
   </ItemGroup>
 	
 	<ItemGroup>
-		<ProjectReference Include="../src-shared/K4-ArenaSharedApi.csproj" />
+		<ProjectReference Include="../../src-shared/K4-ArenaSharedApi.csproj" />
 	</ItemGroup>
 
 </Project>
