@@ -1,6 +1,11 @@
-# K4-Arenas-OnlyAK-HS
- Unofficial special round for K4-Arenas. Only Headshot round with AK47.
+# K4-Arenas-Special-Rounds
+ Unofficial special rounds for K4-Arenas.
  Thanks to [SLAYER_HeadshotOnly](https://github.com/zakriamansoor47/SLAYER_HeadshotOnly) for a way to register if bullet was a HeadShot or not.
+
+## [🔫] Rounds:
+- Only Headshots: AK47
+- Only Headshots: USP-S
+- Only Headshots: Scout (does not work for now :<)
 
 ## [📌] Requirements:
 - [K4-Arenas (tested on v1.5.3)](https://github.com/K4ryuu/K4-Arenas)
