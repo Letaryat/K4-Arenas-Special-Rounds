@@ -95,6 +95,7 @@ public class PluginK4ArenaOnlyHS : BasePlugin
     public void RoundEnd(List<CCSPlayerController>? team1, List<CCSPlayerController>? team2)
     {
         DeregisterEventHandler<EventPlayerHurt>(OnHurt);
+        if (team1 == null || team2 == null) { return; }
         t1!.Clear();
         t2!.Clear();
     }
