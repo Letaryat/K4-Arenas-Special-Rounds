@@ -15,7 +15,7 @@ public class PluginK4ArenaOnlyHS : BasePlugin
     public static int RoundTypeID { get; private set; } = -1;
     public override string ModuleName => "K4-Arenas Addon - OnlyHS-AK47";
     public override string ModuleAuthor => "Letaryat";
-    public override string ModuleVersion => "1.0.0";
+    public override string ModuleVersion => "1.0.1";
 
     public static PluginCapability<IK4ArenaSharedApi> Capability_SharedAPI { get; } = new("k4-arenas:sharedapi");
     private bool isRoundActive;
@@ -28,6 +28,7 @@ public class PluginK4ArenaOnlyHS : BasePlugin
         if (checkAPI != null)
         {
             RoundTypeID = checkAPI.AddSpecialRound("OnlyHS-AK47", 1, true, RoundStart, RoundEnd);
+            RegisterEventHandler<EventPlayerHurt>(OnHurt, HookMode.Pre);
         }
         else
             Logger.LogError("Failed to get shared API capability for K4-Arenas.");
@@ -49,23 +50,18 @@ public class PluginK4ArenaOnlyHS : BasePlugin
     {
         if (team1 == null || team2 == null) { return; }
 
-        team1[0].RemoveWeapons();
-        team2[0].RemoveWeapons();
-
-        /*
-        * I have no fucking idea if this is a proper way to do it or if is it optimized
-        * But I had no idea also how to pass Lists to OnHurt Method so if it works I am happy with that.
-        */
-
+        foreach(var p in team1){
+            p.RemoveWeapons();
+            p.GiveNamedItem(CsItem.Knife);
+            p.GiveNamedItem("weapon_ak47");
+        }
+        foreach(var p in team2){
+            p.RemoveWeapons();
+            p.GiveNamedItem(CsItem.Knife);
+            p.GiveNamedItem("weapon_ak47");
+        }
         t1 = team1;
         t2 = team2;
-
-        team1[0].GiveNamedItem(CsItem.Knife);
-        team1[0].GiveNamedItem("weapon_ak47");
-
-        team2[0].GiveNamedItem(CsItem.Knife);
-        team2[0].GiveNamedItem("weapon_ak47");
-        RegisterEventHandler<EventPlayerHurt>(OnHurt);
 
     }
 
@@ -94,10 +90,14 @@ public class PluginK4ArenaOnlyHS : BasePlugin
     }
     public void RoundEnd(List<CCSPlayerController>? team1, List<CCSPlayerController>? team2)
     {
-        DeregisterEventHandler<EventPlayerHurt>(OnHurt);
         if (team1 == null || team2 == null) { return; }
-        t1!.Clear();
-        t2!.Clear();
+        if(team1 != null){
+            t1!.Clear();
+        }
+        if(team2 != null){
+            t2!.Clear();
+        }
+        return;
     }
 
 
