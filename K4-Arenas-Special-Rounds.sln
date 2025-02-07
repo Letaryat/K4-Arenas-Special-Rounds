@@ -2,11 +2,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K4-Arenas-OnlyHS", "AK47\K4-Arenas-OnlyHS.csproj", "{0E03364F-79C0-C228-1043-1F172B026F60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K4-Arenas-OnlyHS", "AK47\K4-Arenas-OnlyHS.csproj", "{0E03364F-79C0-C228-1043-1F172B026F60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K4-Arenas-OnlyHSScout", "Scout\K4-Arenas-OnlyHSScout.csproj", "{18E1EC90-C2AF-1B79-DE21-52861C56C201}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K4-Arenas-OnlyHSScout", "Scout\K4-Arenas-OnlyHSScout.csproj", "{18E1EC90-C2AF-1B79-DE21-52861C56C201}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K4-Arenas-OnlyHSUSP", "USP\K4-Arenas-OnlyHSUSP.csproj", "{30D824CC-11DB-F9B9-EFD8-EF098DCCA929}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K4-Arenas-OnlyHSUSP", "USP\K4-Arenas-OnlyHSUSP.csproj", "{30D824CC-11DB-F9B9-EFD8-EF098DCCA929}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K4-Arenas-Nades", "Nades\K4-Arenas-Nades.csproj", "{76E147F7-DF73-47AC-AC29-E150246F71BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +28,10 @@ Global
 		{30D824CC-11DB-F9B9-EFD8-EF098DCCA929}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30D824CC-11DB-F9B9-EFD8-EF098DCCA929}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30D824CC-11DB-F9B9-EFD8-EF098DCCA929}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76E147F7-DF73-47AC-AC29-E150246F71BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76E147F7-DF73-47AC-AC29-E150246F71BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76E147F7-DF73-47AC-AC29-E150246F71BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76E147F7-DF73-47AC-AC29-E150246F71BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,4 @@
-﻿
-using CounterStrikeSharp.API;
+﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes;
 using CounterStrikeSharp.API.Core.Capabilities;
@@ -7,15 +6,15 @@ using CounterStrikeSharp.API.Modules.Entities.Constants;
 using K4ArenaSharedApi;
 using Microsoft.Extensions.Logging;
 
-namespace K4ArenaOnlyHS;
+namespace K4ArenaNades;
 
 [MinimumApiVersion(205)]
-public class PluginK4ArenaOnlyHS : BasePlugin
+public class PluginK4ArenaNades : BasePlugin
 {
     public static int RoundTypeID { get; private set; } = -1;
-    public override string ModuleName => "K4-Arenas Addon - OnlyHS-AK47";
+    public override string ModuleName => "K4-Arenas Addon - Nades";
     public override string ModuleAuthor => "Letaryat";
-    public override string ModuleVersion => "1.0.1";
+    public override string ModuleVersion => "1.0.0";
 
     public static PluginCapability<IK4ArenaSharedApi> Capability_SharedAPI { get; } = new("k4-arenas:sharedapi");
     private List<CCSPlayerController>? t1 = new List<CCSPlayerController>();
@@ -26,8 +25,8 @@ public class PluginK4ArenaOnlyHS : BasePlugin
 
         if (checkAPI != null)
         {
-            RoundTypeID = checkAPI.AddSpecialRound("OnlyHS-AK47", 1, true, RoundStart, RoundEnd);
-            RegisterEventHandler<EventPlayerHurt>(OnHurt, HookMode.Pre);
+            RoundTypeID = checkAPI.AddSpecialRound("Nades", 1, true, RoundStart, RoundEnd);
+            RegisterEventHandler<EventGrenadeThrown>(OnThrown);
         }
         else
             Logger.LogError("Failed to get shared API capability for K4-Arenas.");
@@ -49,50 +48,43 @@ public class PluginK4ArenaOnlyHS : BasePlugin
     {
         if (team1 == null || team2 == null) { return; }
 
-        foreach(var p in team1){
+        foreach (var p in team1)
+        {
             p.RemoveWeapons();
             p.GiveNamedItem(CsItem.Knife);
-            p.GiveNamedItem("weapon_ak47");
+            p.GiveNamedItem(CsItem.HEGrenade);
             t1!.Add(p);
         }
-        foreach(var p in team2){
+        foreach (var p in team2)
+        {
             p.RemoveWeapons();
             p.GiveNamedItem(CsItem.Knife);
-            p.GiveNamedItem("weapon_ak47");
+            p.GiveNamedItem(CsItem.HEGrenade);
             t2!.Add(p);
         }
     }
 
-    public HookResult OnHurt(EventPlayerHurt @event, GameEventInfo info)
+    public HookResult OnThrown(EventGrenadeThrown @event, GameEventInfo info)
     {
         var player = @event.Userid;
-        var attacker = @event.Attacker;
-        var DmgHealth = @event.DmgHealth;
-        var DmgArmor = @event.DmgArmor;
-        if (t1!.Contains(player!) && t2!.Contains(attacker!) || t1!.Contains(attacker!) && t2!.Contains(player!))
+        if (player == null || player.IsBot || player.IsHLTV) return HookResult.Continue;
+        if (t1 == null || t2 == null) return HookResult.Continue;
+        if(t1!.Contains(player!) || t2!.Contains(player!))
         {
-            if (@event.Hitgroup != 1)
-            {
-                if (player!.PlayerPawn!.Value!.Health < 100)
-                {
-                    player.PlayerPawn.Value.Health += DmgHealth;
-                }
-                if (player!.PlayerPawn!.Value!.ArmorValue < 100)
-                {
-                    player.PlayerPawn.Value.ArmorValue += DmgArmor;
-                }
-                return HookResult.Continue;
-            }
+            player!.GiveNamedItem(CsItem.HEGrenade);
         }
+
         return HookResult.Continue;
     }
     public void RoundEnd(List<CCSPlayerController>? team1, List<CCSPlayerController>? team2)
     {
         if (team1 == null || team2 == null) { return; }
-        if(team1 != null){
+        if (team1 != null)
+        {
             t1!.Clear();
         }
-        if(team2 != null){
+        if (team2 != null)
+        {
             t2!.Clear();
         }
         return;

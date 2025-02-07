@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<RootNamespace>K4ArenaNades</RootNamespace>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="CounterStrikeSharp.API" Version="1.0.284">
+			<HintPath>C:\Users\letar\source\repos\libs\CounterStrikeSharp.API.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="C:\Users\letar\source\repos\libs\src-shared/K4-ArenaSharedApi.csproj" />
+	</ItemGroup>
+
+</Project>

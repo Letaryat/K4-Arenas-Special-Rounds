@@ -13,21 +13,20 @@ namespace K4ArenaOnlyHS;
 public class PluginK4ArenaOnlyHS : BasePlugin
 {
     public static int RoundTypeID { get; private set; } = -1;
-    public override string ModuleName => "K4-Arenas Addon - OnlyHS-Scout";
+    public override string ModuleName => "K4-Arenas Addon - OnlyHS-SSG08";
     public override string ModuleAuthor => "Letaryat";
     public override string ModuleVersion => "1.0.1";
 
     public static PluginCapability<IK4ArenaSharedApi> Capability_SharedAPI { get; } = new("k4-arenas:sharedapi");
-    private bool isRoundActive;
-    private List<CCSPlayerController>? t1;
-    private List<CCSPlayerController>? t2;
+    private List<CCSPlayerController>? t1 = new List<CCSPlayerController>();
+    private List<CCSPlayerController>? t2 = new List<CCSPlayerController>();
     public override void OnAllPluginsLoaded(bool hotReload)
     {
         IK4ArenaSharedApi? checkAPI = Capability_SharedAPI.Get();
 
         if (checkAPI != null)
         {
-            RoundTypeID = checkAPI.AddSpecialRound("OnlyHS-Scout", 1, true, RoundStart, RoundEnd);
+            RoundTypeID = checkAPI.AddSpecialRound("OnlyHS-SSG08", 1, true, RoundStart, RoundEnd);
             RegisterEventHandler<EventPlayerHurt>(OnHurt, HookMode.Pre);
         }
         else
@@ -50,19 +49,20 @@ public class PluginK4ArenaOnlyHS : BasePlugin
     {
         if (team1 == null || team2 == null) { return; }
 
-        foreach(var p in team1){
+        foreach (var p in team1)
+        {
             p.RemoveWeapons();
             p.GiveNamedItem(CsItem.Knife);
             p.GiveNamedItem("weapon_ssg08");
+            t1!.Add(p);
         }
-        foreach(var p in team2){
+        foreach (var p in team2)
+        {
             p.RemoveWeapons();
             p.GiveNamedItem(CsItem.Knife);
             p.GiveNamedItem("weapon_ssg08");
+            t2!.Add(p);
         }
-        t1 = team1;
-        t2 = team2;
-
     }
 
     public HookResult OnHurt(EventPlayerHurt @event, GameEventInfo info)
@@ -91,13 +91,14 @@ public class PluginK4ArenaOnlyHS : BasePlugin
     public void RoundEnd(List<CCSPlayerController>? team1, List<CCSPlayerController>? team2)
     {
         if (team1 == null || team2 == null) { return; }
-        if(team1 != null){
+        if (team1 != null)
+        {
             t1!.Clear();
         }
-        if(team2 != null){
+        if (team2 != null)
+        {
             t2!.Clear();
         }
-        
         return;
     }
 
