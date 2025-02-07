@@ -5,9 +5,10 @@
 ## [🔫] Rounds:
 - Only Headshots: AK47
 - Only Headshots: USP-S
-- Only Headshots: Scout (does not work for now :<)
+- Only Headshots: Scout
+- Nades only
 
 ## [📌] Requirements:
-- [K4-Arenas (tested on v1.5.3)](https://github.com/K4ryuu/K4-Arenas)
+- [K4-Arenas (tested on v2.0.1)](https://github.com/K4ryuu/K4-Arenas)
 
 ### [🚨] Plugin might be poorly written and have some issues. I have no idea what I am doing, but it worked fine.
