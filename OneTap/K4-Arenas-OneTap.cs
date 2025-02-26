@@ -44,25 +44,8 @@ public class PluginK4_Arenas_OneTap: BasePlugin
     }
     public override void Load(bool hotReload)
     {
-        RegisterEventHandler<EventRoundStart>(OnRoundStart, HookMode.Post);
         RegisterEventHandler<EventWeaponFire>(OnPlayerShoot);
-        RegisterEventHandler<EventRoundFreezeEnd>(OnEndFreeze);
-        RegisterListener<Listeners.OnTick>(OnTick);
         Logger.LogInformation("Started plugin!");
-
-        AddCommand("css_tap", "Responds to the caller with \"pong\"", (player, commandInfo) =>
-        {
-            Logger.LogInformation("T1:");
-            foreach (var p in t1)
-            {
-                Logger.LogInformation($"Gracz: {p.Value.controller.PlayerName}");
-            }
-            Logger.LogInformation("T2:");
-            foreach (var p in t2)
-            {
-                Logger.LogInformation($"Gracz: {p.Value.controller.PlayerName}");
-            }
-        });
     }
 
     public override void Unload(bool hotReload)
@@ -83,146 +66,76 @@ public class PluginK4_Arenas_OneTap: BasePlugin
         foreach(var p in team1)
         {
             if (t1.ContainsKey(p)) { continue; }
+            p.RemoveWeapons();
             p.GiveNamedItem("weapon_ak47");
             t1.Add(p, new PlayerInfo
             {
                 controller = p,
-                ifShot = false,
-                timer = null,
                 placement = checkApi.GetArenaPlacement(p),
-                timerSec = 5,
             });
+            var playerWeapon = p.PlayerPawn.Value!.WeaponServices!.ActiveWeapon.Value;
+            playerWeapon!.Clip1 = 1; playerWeapon.ReserveAmmo.Fill(0);
         }
         foreach (var p in team2)
         {
-            if (t1.ContainsKey(p)) { continue; }
+            if (t2.ContainsKey(p)) { continue; }
+            p.RemoveWeapons();
             p.GiveNamedItem("weapon_ak47");
             t2.Add(p, new PlayerInfo
             {
                 controller = p,
-                ifShot = false,
-                timer = null,
                 placement = checkApi.GetArenaPlacement(p),
-                timerSec = 5,
             });
+            var playerWeapon = p.PlayerPawn.Value!.WeaponServices!.ActiveWeapon.Value;
+            playerWeapon!.Clip1 = 1; playerWeapon.ReserveAmmo.Fill(0);
         }
-    }
-
-    public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
-    {
-
-        return HookResult.Continue;
     }
 
     public HookResult OnPlayerShoot(EventWeaponFire @event, GameEventInfo info)
     {
-        // Pobierz strzelającego gracza
         CCSPlayerController? shooter = @event.Userid;
         if (shooter == null) return HookResult.Continue;
+        if (shooter.PlayerPawn.Value == null) return HookResult.Continue;
 
-        // Sprawdź, w której drużynie jest gracz
         if (t1.TryGetValue(shooter, out PlayerInfo? shooterInfo))
         {
-            // Strzelający jest w drużynie 1, sprawdzamy przeciwników z t2
             foreach (var enemy in t2.Values)
             {
                 if (enemy.placement == shooterInfo.placement)
                 {
-                    if(shooterInfo.ifShot == false && shooterInfo.timer != null)
-                    {
                         Server.PrintToChatAll($"Gracz {shooter.PlayerName} strzelił do przeciwnika na tej samej arenie! {enemy.controller.PlayerName}");
-                        shooterInfo.ifShot = true;
-                        shooterInfo.timer = null;
-                        enemy.timerSec = 5;
-                        enemy.ifShot = false;
-                    }
-                    
-                    // Możesz tu dodać dodatkową logikę np. anulowanie strzału
+                        enemy.controller.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon.Value!.Clip1 = 1;
+                        Utilities.SetStateChanged(enemy.controller.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value!, "CBasePlayerWeapon", "m_iClip1");
                 }
             }
         }
         else if (t2.TryGetValue(shooter, out shooterInfo))
         {
-            // Strzelający jest w drużynie 2, sprawdzamy przeciwników z t1
             foreach (var enemy in t1.Values)
             {
                 if (enemy.placement == shooterInfo.placement)
                 {
-                    if (shooterInfo.ifShot == false && shooterInfo.timer != null)
-                    {
                         Server.PrintToChatAll($"Gracz {shooter.PlayerName} strzelił do przeciwnika na tej samej arenie! {enemy.controller.PlayerName}");
-                    }
+                        enemy.controller.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon.Value!.Clip1 = 1;
+                        Utilities.SetStateChanged(enemy.controller.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value!, "CBasePlayerWeapon", "m_iClip1");
                 }
             }
         }
         return HookResult.Continue;
     }
-    public HookResult OnEndFreeze(EventRoundFreezeEnd @event, GameEventInfo info)
-    {
-        foreach (var p in t1)
-        {
-            if (p.Value.timer == null)
-            {
-                p.Value.timer = AddTimer(5.0f, () =>
-                {
-                    p.Value.timerSec = p.Value.timerSec - 1;
-                    Server.PrintToChatAll($"Koniec timer'a 1 - {p.Value.controller.PlayerName}");
-                    if(p.Value.timerSec == 0)
-                    {
-                        p.Value.timer.Kill();
-                    }
-                }, TimerFlags.REPEAT);
-            }
-        }
-        foreach (var p in t2)
-        {
-            if (p.Value.timer == null)
-            {
-                p.Value.timer = AddTimer(5.0f, () =>
-                {
-                    p.Value.timerSec = p.Value.timerSec - 1;
-                    Server.PrintToChatAll($"Koniec timer'a 2 - {p.Value.controller.PlayerName}");
-                    if (p.Value.timerSec == 0)
-                    {
-                        p.Value.timer.Kill();
-                    }
-                });
-            }
-        }
-        return HookResult.Continue;
-    }
+
     public void RoundEnd(List<CCSPlayerController>? team1, List<CCSPlayerController>? team2)
     {
         if (team1 == null || team2 == null) { return; }
-        //tapPlayers.Clear();
+        t1.Clear();
+        t2.Clear();
         return;
     }
-    private void OnTick()
-    {
-        int barWidth = 20; // Ustalona szerokość paska
 
-        foreach (var p in t1.Concat(t2))
-        {
-            float timeLeft = p.Value.timerSec;  // Pozostały czas w sekundach
-
-            // Obliczamy liczbę kresek proporcjonalnie do czasu (jeśli 5 sek = cały pasek)
-            int numBars = (int)((timeLeft / 5.0f) * barWidth);
-
-            // Tworzymy pasek postępu (| dla wypełnionych, spacja dla pustych)
-            string progressBar = new string('|', numBars) + new string(' ', barWidth - numBars);
-
-            // Wyświetlamy HUD
-            p.Value.controller.PrintToCenter($"> {progressBar} <");
-
-        }
-    }
 
     public class PlayerInfo
     {
         public CCSPlayerController? controller { get; set; }
-        public bool ifShot { get; set; }
-        public CounterStrikeSharp.API.Modules.Timers.Timer? timer { get; set; }
-        public float timerSec { get; set; }
         public int? placement { get; set; }
     }
 
