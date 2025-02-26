@@ -2,6 +2,7 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes;
 using CounterStrikeSharp.API.Core.Capabilities;
+using CounterStrikeSharp.API.Modules.Commands;
 using K4ArenaSharedApi;
 using Microsoft.Extensions.Logging;
 using System;
@@ -42,6 +43,10 @@ public class PluginK4_Arenas_OneTap: BasePlugin
     public override void Load(bool hotReload)
     {
         RegisterEventHandler<EventWeaponFire>(OnPlayerShoot);
+        AddCommandListener("changelevel", ListenerChangeLevel, HookMode.Pre);
+        AddCommandListener("map", ListenerChangeLevel, HookMode.Pre);
+        AddCommandListener("host_workshop_map", ListenerChangeLevel, HookMode.Pre);
+        AddCommandListener("ds_workshop_changelevel", ListenerChangeLevel, HookMode.Pre);
         Logger.LogInformation("Started plugin!");
     }
 
@@ -95,7 +100,6 @@ public class PluginK4_Arenas_OneTap: BasePlugin
         if (shooter.PlayerPawn.Value == null) return HookResult.Continue;
         if(t1 == null || t2 == null) return HookResult.Continue;
         var weapon = @event.Weapon;
-        Server.PrintToChatAll($"wea {weapon}");
         if (!shooter.PlayerPawn.Value.WeaponServices!.ActiveWeapon.IsValid) return HookResult.Continue;
         if (t1.TryGetValue(shooter, out PlayerInfo? shooterInfo))
             {
@@ -107,9 +111,6 @@ public class PluginK4_Arenas_OneTap: BasePlugin
                         {
                             OneClip(enemy.controller!, "weapon_ak47");
                         }
-                        //Server.PrintToChatAll($"Gracz {shooter.PlayerName} strzelił do przeciwnika na tej samej arenie! {enemy.controller!.PlayerName}");
-                        //enemy.controller!.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon.Value!.Clip1 = 1;
-                        
                 }
                 }
             }
@@ -119,13 +120,10 @@ public class PluginK4_Arenas_OneTap: BasePlugin
                 {
                     if (enemy.placement == shooterInfo.placement)
                     {
-                    if (weapon == "weapon_ak47")
-                    {
-                        OneClip(enemy.controller!, "weapon_ak47");
-                    }
-                    //Server.PrintToChatAll($"Gracz {shooter.PlayerName} strzelił do przeciwnika na tej samej arenie! {enemy.controller!.PlayerName}");
-                    //enemy.controller!.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon.Value!.Clip1 = 1;
-                    //Utilities.SetStateChanged(enemy.controller.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value!, "CBasePlayerWeapon", "m_iClip1");
+                        if (weapon == "weapon_ak47")
+                        {
+                            OneClip(enemy.controller!, "weapon_ak47");
+                        }
                 }
                 }
             }
@@ -144,7 +142,6 @@ public class PluginK4_Arenas_OneTap: BasePlugin
                 weapon.Value.ReserveAmmo.Fill(0);
             }
             Utilities.SetStateChanged(weapon.Value, "CBasePlayerWeapon", "m_iClip1");
-            Server.PrintToChatAll($"Zmiana klipku w {weaponName}");
         }
     }
     public void RoundEnd(List<CCSPlayerController>? team1, List<CCSPlayerController>? team2)
@@ -155,6 +152,13 @@ public class PluginK4_Arenas_OneTap: BasePlugin
         return;
     }
 
+    public HookResult ListenerChangeLevel(CCSPlayerController? player, CommandInfo info)
+    {
+        if(t1 == null || t2 == null) { return HookResult.Continue; }
+        t1.Clear();
+        t2.Clear();
+        return HookResult.Continue;
+    }
 
     public class PlayerInfo
     {
