@@ -46,6 +46,9 @@ public class PluginK4ArenaNoCrosshair : BasePlugin
         if (team1 == null || team2 == null) { return; }
         foreach(var players in team1.Concat(team2))
         {
+            players.RemoveWeapons();
+            players.GiveNamedItem("weapon_knife");
+            players.GiveNamedItem("weapon_ak47");
             players!.PlayerPawn!.Value!.HideHUD = 1 << 8;
         }
     }

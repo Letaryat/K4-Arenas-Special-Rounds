@@ -61,7 +61,6 @@ public class PluginK4_Arenas_OneTap: BasePlugin
         else
             Logger.LogError("Failed to get shared API capability for K4-Arenas.");
     }
-
     public void RoundStart(List<CCSPlayerController>? team1, List<CCSPlayerController>? team2)
     {
         if (team1 == null || team2 == null) return;
