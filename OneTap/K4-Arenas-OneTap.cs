@@ -4,6 +4,7 @@ using CounterStrikeSharp.API.Core.Attributes;
 using CounterStrikeSharp.API.Core.Capabilities;
 using K4ArenaSharedApi;
 using Microsoft.Extensions.Logging;
+using System;
 
 
 namespace K4_Arenas_OneTap;
@@ -18,11 +19,11 @@ public class PluginK4_Arenas_OneTap: BasePlugin
 
     public static PluginCapability<IK4ArenaSharedApi> Capability_SharedAPI { get; } = new("k4-arenas:sharedapi");
     public IK4ArenaSharedApi? checkApi;
-    private CounterStrikeSharp.API.Modules.Timers.Timer? Timer { get; set; } = null;
+    //private CounterStrikeSharp.API.Modules.Timers.Timer? Timer { get; set; } = null;
     //private Dictionary<CCSPlayerController, CounterStrikeSharp.API.Modules.Timers.Timer> PlayerTimer = new Dictionary<CCSPlayerController, CounterStrikeSharp.API.Modules.Timers.Timer>();
     //private Dictionary<string, List<PlayerInfo>> tapPlayers = new Dictionary<string, List<PlayerInfo>>();
-    public Dictionary <CCSPlayerController, PlayerInfo> t1 = new Dictionary<CCSPlayerController, PlayerInfo>();
-    public Dictionary<CCSPlayerController, PlayerInfo> t2 = new Dictionary<CCSPlayerController, PlayerInfo>();
+    private Dictionary <CCSPlayerController, PlayerInfo> t1 = new Dictionary<CCSPlayerController, PlayerInfo>();
+    private Dictionary<CCSPlayerController, PlayerInfo> t2 = new Dictionary<CCSPlayerController, PlayerInfo>();
 
     public override void OnAllPluginsLoaded(bool hotReload)
     {
@@ -40,7 +41,7 @@ public class PluginK4_Arenas_OneTap: BasePlugin
     }
     public override void Load(bool hotReload)
     {
-        RegisterEventHandler<EventWeaponFire>(OnPlayerShoot, HookMode.Post);
+        RegisterEventHandler<EventWeaponFire>(OnPlayerShoot);
         Logger.LogInformation("Started plugin!");
     }
 
@@ -59,34 +60,32 @@ public class PluginK4_Arenas_OneTap: BasePlugin
     public void RoundStart(List<CCSPlayerController>? team1, List<CCSPlayerController>? team2)
     {
         if (team1 == null || team2 == null) return;
-        foreach (var p in team1)
-        {
-            if (t1.ContainsKey(p)) { continue; }
-            t1.Add(p, new PlayerInfo
+            foreach (var p in team1)
             {
-                controller = p,
-                placement = checkApi.GetArenaPlacement(p),
-            });
-            p.RemoveWeapons();
-            p.GiveNamedItem("weapon_knife");
-            p.GiveNamedItem("weapon_ak47");
-            var playerWeapon = p.PlayerPawn.Value!.WeaponServices!.ActiveWeapon.Value;
-            playerWeapon!.Clip1 = 1; playerWeapon.ReserveAmmo.Fill(0);
-        }
-        foreach (var p in team2)
-        {
-            if (t2.ContainsKey(p)) { continue; }
-            t2.Add(p, new PlayerInfo
+                if (t1.ContainsKey(p)) { continue; }
+                t1!.Add(p, new PlayerInfo
+                {
+                    controller = p,
+                    placement = checkApi!.GetArenaPlacement(p),
+                });
+                p.RemoveWeapons();
+                p.GiveNamedItem("weapon_knife");
+                p.GiveNamedItem("weapon_ak47");
+                OneClip(p, "weapon_ak47");
+            }
+            foreach (var p in team2)
             {
-                controller = p,
-                placement = checkApi.GetArenaPlacement(p),
-            });
-            p.RemoveWeapons();
-            p.GiveNamedItem("weapon_knife");
-            p.GiveNamedItem("weapon_ak47");
-            var playerWeapon = p.PlayerPawn.Value!.WeaponServices!.ActiveWeapon.Value;
-            playerWeapon!.Clip1 = 1; playerWeapon.ReserveAmmo.Fill(0);
-        }
+                if (t2.ContainsKey(p)) { continue; }
+                t2!.Add(p, new PlayerInfo
+                {
+                    controller = p,
+                    placement = checkApi!.GetArenaPlacement(p),
+                });
+                p.RemoveWeapons();
+                p.GiveNamedItem("weapon_knife");
+                p.GiveNamedItem("weapon_ak47");
+                OneClip(p, "weapon_ak47");
+            }
     }
 
     public HookResult OnPlayerShoot(EventWeaponFire @event, GameEventInfo info)
@@ -95,18 +94,23 @@ public class PluginK4_Arenas_OneTap: BasePlugin
         if (shooter == null) return HookResult.Continue;
         if (shooter.PlayerPawn.Value == null) return HookResult.Continue;
         if(t1 == null || t2 == null) return HookResult.Continue;
+        var weapon = @event.Weapon;
+        Server.PrintToChatAll($"wea {weapon}");
         if (!shooter.PlayerPawn.Value.WeaponServices!.ActiveWeapon.IsValid) return HookResult.Continue;
-
-            if (t1.TryGetValue(shooter, out PlayerInfo? shooterInfo))
+        if (t1.TryGetValue(shooter, out PlayerInfo? shooterInfo))
             {
                 foreach (var enemy in t2.Values)
                 {
                     if (enemy.placement == shooterInfo.placement)
                     {
-                        Server.PrintToChatAll($"Gracz {shooter.PlayerName} strzelił do przeciwnika na tej samej arenie! {enemy.controller.PlayerName}");
-                        enemy.controller!.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon.Value!.Clip1 = 1;
-                        Utilities.SetStateChanged(enemy.controller.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value!, "CBasePlayerWeapon", "m_iClip1");
-                    }
+                        if(weapon == "weapon_ak47")
+                        {
+                            OneClip(enemy.controller!, "weapon_ak47");
+                        }
+                        //Server.PrintToChatAll($"Gracz {shooter.PlayerName} strzelił do przeciwnika na tej samej arenie! {enemy.controller!.PlayerName}");
+                        //enemy.controller!.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon.Value!.Clip1 = 1;
+                        
+                }
                 }
             }
             else if (t2.TryGetValue(shooter, out shooterInfo))
@@ -115,10 +119,14 @@ public class PluginK4_Arenas_OneTap: BasePlugin
                 {
                     if (enemy.placement == shooterInfo.placement)
                     {
-                        Server.PrintToChatAll($"Gracz {shooter.PlayerName} strzelił do przeciwnika na tej samej arenie! {enemy.controller.PlayerName}");
-                        enemy.controller!.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon.Value!.Clip1 = 1;
-                        Utilities.SetStateChanged(enemy.controller.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value!, "CBasePlayerWeapon", "m_iClip1");
+                    if (weapon == "weapon_ak47")
+                    {
+                        OneClip(enemy.controller!, "weapon_ak47");
                     }
+                    //Server.PrintToChatAll($"Gracz {shooter.PlayerName} strzelił do przeciwnika na tej samej arenie! {enemy.controller!.PlayerName}");
+                    //enemy.controller!.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon.Value!.Clip1 = 1;
+                    //Utilities.SetStateChanged(enemy.controller.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value!, "CBasePlayerWeapon", "m_iClip1");
+                }
                 }
             }
 
@@ -126,6 +134,19 @@ public class PluginK4_Arenas_OneTap: BasePlugin
         return HookResult.Continue;
     }
 
+    public void OneClip(CCSPlayerController player, string weaponName)
+    {
+        var weapon = player.PlayerPawn.Value!.WeaponServices!.MyWeapons.Where(x => x.Value?.DesignerName == weaponName).FirstOrDefault();
+        if (weapon != null && weapon.IsValid) {
+            weapon.Value!.Clip1 = 1;
+            if(weapon.Value.ReserveAmmo[0] != 0)
+            {
+                weapon.Value.ReserveAmmo.Fill(0);
+            }
+            Utilities.SetStateChanged(weapon.Value, "CBasePlayerWeapon", "m_iClip1");
+            Server.PrintToChatAll($"Zmiana klipku w {weaponName}");
+        }
+    }
     public void RoundEnd(List<CCSPlayerController>? team1, List<CCSPlayerController>? team2)
     {
         if (team1 == null || team2 == null) { return; }
