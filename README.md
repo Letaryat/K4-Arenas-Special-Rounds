@@ -6,7 +6,9 @@
 - Only Headshots: AK47
 - Only Headshots: USP-S
 - Only Headshots: Scout
-- Nades only
+- Nades only,
+- No crosshair (ak47),
+- Onetaps (ak47),
 
 ## [📌] Requirements:
 - [K4-Arenas (tested on v2.0.1)](https://github.com/K4ryuu/K4-Arenas)
