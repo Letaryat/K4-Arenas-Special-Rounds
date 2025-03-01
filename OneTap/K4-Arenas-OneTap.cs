@@ -20,9 +20,6 @@ public class PluginK4_Arenas_OneTap: BasePlugin
 
     public static PluginCapability<IK4ArenaSharedApi> Capability_SharedAPI { get; } = new("k4-arenas:sharedapi");
     public IK4ArenaSharedApi? checkApi;
-    //private CounterStrikeSharp.API.Modules.Timers.Timer? Timer { get; set; } = null;
-    //private Dictionary<CCSPlayerController, CounterStrikeSharp.API.Modules.Timers.Timer> PlayerTimer = new Dictionary<CCSPlayerController, CounterStrikeSharp.API.Modules.Timers.Timer>();
-    //private Dictionary<string, List<PlayerInfo>> tapPlayers = new Dictionary<string, List<PlayerInfo>>();
     private Dictionary <CCSPlayerController, PlayerInfo> t1 = new Dictionary<CCSPlayerController, PlayerInfo>();
     private Dictionary<CCSPlayerController, PlayerInfo> t2 = new Dictionary<CCSPlayerController, PlayerInfo>();
 
@@ -133,15 +130,31 @@ public class PluginK4_Arenas_OneTap: BasePlugin
 
     public void OneClip(CCSPlayerController player, string weaponName)
     {
-        var weapon = player.PlayerPawn.Value!.WeaponServices!.MyWeapons.Where(x => x.Value?.DesignerName == weaponName).FirstOrDefault();
-        if (weapon != null && weapon.IsValid) {
-            weapon.Value!.Clip1 = 1;
-            if(weapon.Value.ReserveAmmo[0] != 0)
+        try
+        {
+            if (player.PlayerPawn == null || player.PlayerPawn.Value!.WeaponServices == null || player.PlayerPawn.Value.WeaponServices.MyWeapons == null) { return; }
+            var weapon = player.PlayerPawn.Value!.WeaponServices!.MyWeapons.Where(x => x.Value?.DesignerName == weaponName).FirstOrDefault();
+            CCSWeaponBase _weapon = weapon!.Value!.As<CCSWeaponBase>();
+            if (weapon != null && weapon.IsValid)
             {
-                weapon.Value.ReserveAmmo.Fill(0);
+
+                if (weapon.Value!.Clip1 != 1)
+                {
+                    weapon.Value!.Clip1 = 1;
+                    weapon.Value.Clip2 = 0;
+                }
+                if (weapon.Value.ReserveAmmo[0] != 0)
+                {
+                    weapon.Value.ReserveAmmo.Fill(0);
+                }
+                Utilities.SetStateChanged(weapon.Value, "CBasePlayerWeapon", "m_iClip1");
             }
-            Utilities.SetStateChanged(weapon.Value, "CBasePlayerWeapon", "m_iClip1");
         }
+        catch (Exception ex)
+        {
+            Logger.LogInformation($"Onetap-Error: {ex}");
+        }
+
     }
     public void RoundEnd(List<CCSPlayerController>? team1, List<CCSPlayerController>? team2)
     {
