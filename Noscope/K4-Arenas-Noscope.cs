@@ -84,9 +84,11 @@ public class PluginK4ArenaOnlyHS : BasePlugin
 
     private void OnTick()
     {
+
         foreach(var player in Utilities.GetPlayers())
         {
-            if(t1!.Contains(player) || t2!.Contains(player))
+            if (player.Pawn == null || !player.Pawn.IsValid) return;
+            if (t1!.Contains(player) || t2!.Contains(player))
             {
                 var ActiveWeaponName = player.PlayerPawn.Value!.WeaponServices!.ActiveWeapon.Value!.DesignerName;
                 if (ActiveWeaponName.Contains("weapon_ssg08") || ActiveWeaponName.Contains("weapon_awp")
