@@ -70,7 +70,6 @@ public class PluginK4ArenaOnlyHS : BasePlugin
             p.RemoveWeapons();
             p.GiveNamedItem(CsItem.Knife);
             p.GiveNamedItem(sniper);
-            NoScopeMethod(p);
             t1!.Add(p);
         }
         foreach(var p in team2){
@@ -79,16 +78,8 @@ public class PluginK4ArenaOnlyHS : BasePlugin
             p.RemoveWeapons();
             p.GiveNamedItem(CsItem.Knife);
             p.GiveNamedItem(sniper);
-            NoScopeMethod(p);
             t2!.Add(p);
         }
-    }
-
-    public void NoScopeMethod(CCSPlayerController p)
-    {
-        var playerWeapon = p.PlayerPawn.Value!.WeaponServices!.ActiveWeapon;
-        var baseWeapon = playerWeapon.Value!.As<CCSWeaponBase>();
-        baseWeapon.NextSecondaryAttackTick = Server.TickCount + 500;
     }
 
     private void OnTick()
