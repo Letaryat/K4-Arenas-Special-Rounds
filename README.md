@@ -26,7 +26,7 @@ Rounds are now categorized as
 - [K4-Arenas (tested on v2.0.4)](https://github.com/K4ryuu/K4-Arenas)
 
 ## [❤️] Thanks:
-- [SLAYER_HeadshotOnly](https://github.com/zakriamansoor47/SLAYER_HeadshotOnly) for a way to register if bullet was a HeadShot or not.
+- [SLAYER_HeadshotOnly & SLAYER_Noscope](https://github.com/zakriamansoor47) for a way to register if bullet was a HeadShot or not & How to manage Noscopes.
 - [Boink](https://discord.com/channels/1160907911501991946/1213990479637651489/1330357665293013012) Scaling player
 
 ### [🚨] Plugin might be poorly written and have some issues. I have no idea what I am doing, but it worked fine.

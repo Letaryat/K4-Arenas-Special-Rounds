@@ -79,7 +79,6 @@ public class PluginK4ArenaOnlyHS : BasePlugin
                 || ActiveWeaponName.Contains("weapon_scar20") || ActiveWeaponName.Contains("weapon_g3sg1"))
                 {
                     player.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value!.NextSecondaryAttackTick = Server.TickCount + 500;
-                    var buttons = player.Buttons;
                 }
             }
         }
