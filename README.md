@@ -16,6 +16,7 @@ Rounds are now categorized as
    - Flying Scouts,
    - Gnome (Small player model),
    - Panzerfaust (AWP that shoots with explosives)
+   - Deagle Discipline (Each missed shot takes -15 HP)
 2. WithPreferences <br/>(Only for specific version of K4-Arenas with API method called: **GetPlayerWeaponPreferences()**, which allows to get player weapon preferences. Thanks to that player can use any weapons that they choose instead of hard-coded ones.)<br/>This includes rounds such as:
    - Noscope,
    - Onetap (Rifles, Pistol),
