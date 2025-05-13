@@ -72,7 +72,6 @@ public class PluginK4ArenaOnlyHS : BasePlugin
             p.GiveNamedItem(CsItem.Knife);
             p.GiveNamedItem(rifle);
             t1!.Add(p);
-            Server.PrintToChatAll($"Gracz {p.PlayerName} dostal: {rifle}");
         }
         foreach(var p in team2){
             var playerPrefernce = checkAPI!.GetPlayerWeaponPreferences(p);
@@ -81,7 +80,6 @@ public class PluginK4ArenaOnlyHS : BasePlugin
             p.GiveNamedItem(CsItem.Knife);
             p.GiveNamedItem(rifle);
             t2!.Add(p);
-            Server.PrintToChatAll($"Gracz {p.PlayerName} dostal: {rifle}");
         }
     }
 
