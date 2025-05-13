@@ -1,16 +1,32 @@
 # K4-Arenas-Special-Rounds
  Unofficial special rounds for K4-Arenas. <br/>
- Thanks to [SLAYER_HeadshotOnly](https://github.com/zakriamansoor47/SLAYER_HeadshotOnly) for a way to register if bullet was a HeadShot or not.
 
 ## [🔫] Rounds:
-- Only Headshots: AK47
-- Only Headshots: USP-S
-- Only Headshots: Scout
-- Nades only,
-- No crosshair (ak47),
-- Onetaps (ak47),
+Rounds are now categorized as
+1. WithoutPreferences (For all versions of K4-Arenas). Includes rounds such as:
+   - Only Headshot (AK47, USP-S, SSG08)
+   - Only HE Grenades (Nades),
+   - No Crosshair (AK47),
+   - Onetaps (AK47),
+   - Only Knife 35HP,
+   - Noscope (AWP, SCOUT)
+   - Flying Scouts,
+   - Gnome (Small player model),
+   - Panzerfaust (AWP that shoots with explosives)
+2. WithPreferences (For now only specific version of K4-Arenas that have API method named **GetPlayerWeaponPreferences()**, which allows to get player weapon preferences.) This includes:
+   - Noscope,
+   - Onetap (Rifles, Pistol),
+   - Only Headshot (Rifles, Pistol),
 
 ## [📌] Requirements:
-- [K4-Arenas (tested on v2.0.1)](https://github.com/K4ryuu/K4-Arenas)
+- [K4-Arenas (tested on v2.0.4)](https://github.com/K4ryuu/K4-Arenas)
+
+## Support
+Most of my work is done for free and if you would like to support me as a poor-developer and motivate me to a further and faster development, please consider donating using ko-fi. <br/>
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/H2H8TK0L9)
+
+## [❤️] Thanks:
+- [SLAYER_HeadshotOnly](https://github.com/zakriamansoor47/SLAYER_HeadshotOnly) for a way to register if bullet was a HeadShot or not.
+- [Boink](https://discord.com/channels/1160907911501991946/1213990479637651489/1330357665293013012) Scaling player
 
 ### [🚨] Plugin might be poorly written and have some issues. I have no idea what I am doing, but it worked fine.
