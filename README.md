@@ -1,6 +1,9 @@
 # K4-Arenas-Special-Rounds
  Unofficial special rounds for K4-Arenas. <br/>
 
+## Support
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/H2H8TK0L9)
+
 ## [🔫] Rounds:
 Rounds are now categorized as
 1. WithoutPreferences (For all versions of K4-Arenas). Includes rounds such as:
@@ -20,10 +23,6 @@ Rounds are now categorized as
 
 ## [📌] Requirements:
 - [K4-Arenas (tested on v2.0.4)](https://github.com/K4ryuu/K4-Arenas)
-
-## Support
-Most of my work is done for free and if you would like to support me as a poor-developer and motivate me to a further and faster development, please consider donating using ko-fi. <br/>
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/H2H8TK0L9)
 
 ## [❤️] Thanks:
 - [SLAYER_HeadshotOnly](https://github.com/zakriamansoor47/SLAYER_HeadshotOnly) for a way to register if bullet was a HeadShot or not.
