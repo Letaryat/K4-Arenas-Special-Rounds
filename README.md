@@ -6,7 +6,7 @@
 
 ## [🔫] Rounds:
 Rounds are now categorized as
-1. WithoutPreferences (For all versions of K4-Arenas). Includes rounds such as:
+1. WithoutPreferences <br/>(For all versions of K4-Arenas). Includes rounds such as:
    - Only Headshot (AK47, USP-S, SSG08)
    - Only HE Grenades (Nades),
    - No Crosshair (AK47),
@@ -16,7 +16,7 @@ Rounds are now categorized as
    - Flying Scouts,
    - Gnome (Small player model),
    - Panzerfaust (AWP that shoots with explosives)
-2. WithPreferences (For now only specific version of K4-Arenas that have API method named **GetPlayerWeaponPreferences()**, which allows to get player weapon preferences.) This includes:
+2. WithPreferences <br/>(For now only specific version of K4-Arenas that have API method named **GetPlayerWeaponPreferences()**, which allows to get player weapon preferences.) This includes:
    - Noscope,
    - Onetap (Rifles, Pistol),
    - Only Headshot (Rifles, Pistol),
