@@ -128,11 +128,18 @@ public class PluginK4ArenaNades : BasePlugin
             if (player.Pawn == null || !player.Pawn.IsValid) return;
             if (t1!.Contains(player) || t2!.Contains(player))
             {
-                var ActiveWeaponName = player.PlayerPawn.Value!.WeaponServices!.ActiveWeapon.Value!.DesignerName;
+                var pawn = player.PlayerPawn?.Value;
+                if (pawn == null || pawn.WeaponServices == null) continue;
+
+                var weapon = pawn.WeaponServices.ActiveWeapon?.Value;
+                if (weapon == null) continue;
+
+                var ActiveWeaponName = weapon.DesignerName;
+
                 if (ActiveWeaponName.Contains("weapon_ssg08") || ActiveWeaponName.Contains("weapon_awp")
                 || ActiveWeaponName.Contains("weapon_scar20") || ActiveWeaponName.Contains("weapon_g3sg1"))
                 {
-                    player.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value!.NextSecondaryAttackTick = Server.TickCount + 500;
+                    player.PlayerPawn!.Value!.WeaponServices!.ActiveWeapon.Value!.NextSecondaryAttackTick = Server.TickCount + 500;
                     var buttons = player.Buttons;
                 }
             }
