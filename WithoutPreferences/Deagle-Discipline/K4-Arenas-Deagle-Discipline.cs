@@ -89,8 +89,12 @@ public class PluginK4ArenaOnlyHS : BasePlugin
                 {
                     pawn.CommitSuicide(true, false);
                 }
-                pawn.Health -= minusHP;
-                Utilities.SetStateChanged(pawn, "CBaseEntity", "m_iHealth");
+                else
+                {
+                    pawn.Health -= minusHP;
+                    Utilities.SetStateChanged(pawn, "CBaseEntity", "m_iHealth");
+                }
+
             }
             playerHitMap.Remove(steamId);
         });
