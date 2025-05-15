@@ -19,7 +19,7 @@ public class PluginK4ArenaOnlyHS : BasePlugin
     public static int RoundTypeID { get; private set; } = -1;
     public override string ModuleName => "K4-Arenas Addon - Gnome";
     public override string ModuleAuthor => "Letaryat";
-    public override string ModuleVersion => "1.0.1";
+    public override string ModuleVersion => "1.0.0";
 
     public static PluginCapability<IK4ArenaSharedApi> Capability_SharedAPI { get; } = new("k4-arenas:sharedapi");
     private List<CCSPlayerController>? t1 = new List<CCSPlayerController>();
@@ -48,6 +48,21 @@ public class PluginK4ArenaOnlyHS : BasePlugin
             Logger.LogError("Failed to get shared API capability for K4-Arenas.");
     }
 
+    public static CsItem GetRandomItem()
+    {
+        List<CsItem> Items =
+        [
+            CsItem.AK47,
+            CsItem.M4A1S,
+            CsItem.M4A1,
+            CsItem.GalilAR,
+            CsItem.Famas,
+            CsItem.SG556,
+            CsItem.AUG,
+        ];
+        return Items[Random.Shared.Next(0, Items.Count)];
+    }
+
     public void RoundStart(List<CCSPlayerController>? team1, List<CCSPlayerController>? team2)
     {
         if (team1 == null || team2 == null) { return; }
@@ -56,15 +71,19 @@ public class PluginK4ArenaOnlyHS : BasePlugin
 
         foreach (var p in team1){
             p.RemoveWeapons();
+            var playerPrefernce = checkAPI!.GetPlayerWeaponPreferences(p);
+            var rifle = playerPrefernce["Rifle"] ?? GetRandomItem();
             p.GiveNamedItem(CsItem.Knife);
-            p.GiveNamedItem(CsItem.AK47);
+            p.GiveNamedItem(rifle);
             SetScale(p);
             t1!.Add(p);
         }
         foreach(var p in team2){
             p.RemoveWeapons();
+            var playerPrefernce = checkAPI!.GetPlayerWeaponPreferences(p);
+            var rifle = playerPrefernce["Rifle"] ?? GetRandomItem();
             p.GiveNamedItem(CsItem.Knife);
-            p.GiveNamedItem(CsItem.AK47);
+            p.GiveNamedItem(rifle);
             SetScale(p);
             t2!.Add(p);
         }
