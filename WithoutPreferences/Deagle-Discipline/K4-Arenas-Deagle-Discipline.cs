@@ -6,6 +6,7 @@ using CounterStrikeSharp.API.Core.Capabilities;
 using CounterStrikeSharp.API.Modules.Entities.Constants;
 using K4ArenaSharedApi;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace K4ArenaOnlyHS;
 
@@ -18,7 +19,7 @@ public class PluginK4ArenaOnlyHS : BasePlugin
     public override string ModuleVersion => "1.0.1";
 
     public static PluginCapability<IK4ArenaSharedApi> Capability_SharedAPI { get; } = new("k4-arenas:sharedapi");
-    private Dictionary<ulong, bool> playerHitMap = new();
+    private Dictionary<int, bool> playerHitMap = new();
     private List<CCSPlayerController>? t1 = new List<CCSPlayerController>();
     private List<CCSPlayerController>? t2 = new List<CCSPlayerController>();
     public override void OnAllPluginsLoaded(bool hotReload)
@@ -55,48 +56,50 @@ public class PluginK4ArenaOnlyHS : BasePlugin
             p.RemoveWeapons();
             p.GiveNamedItem(CsItem.Knife);
             p.GiveNamedItem(CsItem.Deagle);
+            playerHitMap.Add(p.Slot, true);
             t1!.Add(p);
         }
         foreach(var p in team2){
             p.RemoveWeapons();
             p.GiveNamedItem(CsItem.Knife);
             p.GiveNamedItem(CsItem.Deagle);
+            playerHitMap.Add(p.Slot, true);
             t2!.Add(p);
         }
     }
 
+
     public HookResult OnWeaponFire(EventWeaponFire @event, GameEventInfo info)
     {
         var shooter = @event.Userid;
-        if (shooter == null || shooter.SteamID == 0) return HookResult.Continue;
+        if (shooter == null) return HookResult.Continue;
 
         if (!t1!.Contains(shooter) && !t2!.Contains(shooter)) return HookResult.Continue;
 
 
-        ulong steamId = shooter.SteamID;
+        var slot = shooter.Slot;
+
         var pawn = shooter.PlayerPawn.Value;
         if (pawn == null) return HookResult.Continue;
 
         var minusHP = 15;
 
-        playerHitMap[steamId] = false;
+        playerHitMap[slot] = false;
+
+        if (pawn.Health <= minusHP)
+        {
+            pawn.CommitSuicide(true, false);
+            return HookResult.Continue;
+        }
 
         AddTimer(0.1f, () =>
         {
-            if (playerHitMap.TryGetValue(steamId, out bool didHit) && !didHit)
+            if (playerHitMap.TryGetValue(slot, out bool didHit) && !didHit)
             {
-                if(pawn.Health <= minusHP)
-                {
-                    pawn.CommitSuicide(true, false);
-                }
-                else
-                {
                     pawn.Health -= minusHP;
                     Utilities.SetStateChanged(pawn, "CBaseEntity", "m_iHealth");
-                }
-
             }
-            playerHitMap.Remove(steamId);
+            playerHitMap.Remove(slot);
         });
 
         return HookResult.Continue;
@@ -108,10 +111,9 @@ public class PluginK4ArenaOnlyHS : BasePlugin
         if (attacker == null || attacker.SteamID == 0) return HookResult.Continue;
         if (!t1!.Contains(attacker) && !t2!.Contains(attacker)) return HookResult.Continue;
 
+        var slot = attacker.Slot;
 
-
-        ulong steamId = attacker.SteamID;
-        playerHitMap[steamId] = true;
+        playerHitMap[slot] = true;
 
         return HookResult.Continue;
     }
