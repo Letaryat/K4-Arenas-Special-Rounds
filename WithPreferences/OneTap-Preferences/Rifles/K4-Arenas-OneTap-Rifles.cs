@@ -41,6 +41,7 @@ public class PluginK4_Arenas_OneTap: BasePlugin
     public override void Load(bool hotReload)
     {
         RegisterEventHandler<EventWeaponFire>(OnPlayerShoot);
+        //RegisterListener<Listeners.OnTick>(OnTick);
         AddCommandListener("changelevel", ListenerChangeLevel, HookMode.Pre);
         AddCommandListener("map", ListenerChangeLevel, HookMode.Pre);
         AddCommandListener("host_workshop_map", ListenerChangeLevel, HookMode.Pre);
@@ -93,6 +94,7 @@ public class PluginK4_Arenas_OneTap: BasePlugin
                 p.GiveNamedItem("weapon_knife");
                 p.GiveNamedItem(rifle);
                 OneClip(p);
+                SetPlayerHP(p);
             }
             foreach (var p in team2)
             {
@@ -108,6 +110,7 @@ public class PluginK4_Arenas_OneTap: BasePlugin
                 p.GiveNamedItem("weapon_knife");
                 p.GiveNamedItem(rifle);
                 OneClip(p);
+                SetPlayerHP(p);
             }
     }
 
@@ -119,6 +122,10 @@ public class PluginK4_Arenas_OneTap: BasePlugin
         if(t1 == null || t2 == null) return HookResult.Continue;
         var weapon = @event.Weapon;
         if (!shooter.PlayerPawn.Value.WeaponServices!.ActiveWeapon.IsValid) return HookResult.Continue;
+
+        //shooter.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value!.NextPrimaryAttackTick = Server.TickCount + 100;
+        //Utilities.SetStateChanged(shooter.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value!, "CBasePlayerWeapon", "m_nNextPrimaryAttackTick");
+
         if (t1.TryGetValue(shooter, out PlayerInfo? shooterInfo))
             {
                 foreach (var enemy in t2.Values)
@@ -187,39 +194,73 @@ public class PluginK4_Arenas_OneTap: BasePlugin
     */
     public void OneClip(CCSPlayerController player)
     {
-        try
-        {
-            var pawn = player.PlayerPawn?.Value;
-            if (pawn == null || pawn.WeaponServices?.MyWeapons == null)
-                return;
 
-            foreach (var wepHandle in pawn.WeaponServices.MyWeapons)
+            try
             {
-                var weapon = wepHandle.Value;
-                if (weapon == null || !weapon.IsValid)
-                    continue;
+                var pawn = player.PlayerPawn?.Value;
+                if (pawn == null || pawn.WeaponServices?.MyWeapons == null)
+                    return;
 
-                // Pomijamy noże
-                if (weapon.DesignerName != null && weapon.DesignerName.Contains("knife", StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                var baseWeapon = weapon.As<CCSWeaponBase>();
-                if (baseWeapon != null)
+                foreach (var wepHandle in pawn.WeaponServices.MyWeapons)
                 {
-                    baseWeapon.Clip1 = 1;
-                    baseWeapon.Clip2 = 0;
-                    baseWeapon.ReserveAmmo.Fill(0);
+                    var weapon = wepHandle.Value;
+                    if (weapon == null || !weapon.IsValid)
+                        continue;
 
+                    // Pomijamy noże
+                    if (weapon.DesignerName != null && weapon.DesignerName.Contains("knife", StringComparison.OrdinalIgnoreCase))
+                        continue;
 
-                    Utilities.SetStateChanged(baseWeapon, "CBasePlayerWeapon", "m_iClip1");
+                    var baseWeapon = weapon.As<CCSWeaponBase>();
+                    if (baseWeapon != null)
+                    {
+                        baseWeapon.Clip1 = 1;
+                        baseWeapon.Clip2 = 0;
+                        baseWeapon.ReserveAmmo.Fill(0);
+                        Utilities.SetStateChanged(baseWeapon, "CBasePlayerWeapon", "m_iClip1");
+                    }
                 }
             }
-        }
-        catch (Exception ex)
+            catch (Exception ex)
+            {
+                Logger.LogInformation($"OneClipAllWeapons Error: {ex}");
+            }
+ 
+    }
+
+
+    public void SetPlayerHP(CCSPlayerController p)
+    {
+        if (p == null) return;
+        if (p.PlayerPawn.Value == null) return;
+        Server.NextFrame(() =>
         {
-            Logger.LogInformation($"OneClipAllWeapons Error: {ex}");
+            p.PlayerPawn.Value!.Health = 1;
+            Utilities.SetStateChanged(p.PlayerPawn!.Value!, "CBaseEntity", "m_iHealth");
+        });
+    }
+
+    /*
+    private void OnTick()
+    {
+        foreach(var player in Utilities.GetPlayers())
+        {
+            if (player.Pawn == null || !player.Pawn.IsValid) return;
+            if (t1!.ContainsKey(player) || t2!.ContainsKey(player))
+            {
+                var pawn = player.PlayerPawn?.Value;
+                if (pawn == null || pawn.WeaponServices == null) continue;
+
+                var weapon = pawn.WeaponServices.ActiveWeapon?.Value;
+                if (weapon == null) continue;
+
+                var ActiveWeaponName = weapon.DesignerName;
+
+                pawn.WeaponServices!.ActiveWeapon!.Value!.NextPrimaryAttackTick = Server.TickCount + 500;
+            }
         }
     }
+    */
 
     public void RoundEnd(List<CCSPlayerController>? team1, List<CCSPlayerController>? team2)
     {
