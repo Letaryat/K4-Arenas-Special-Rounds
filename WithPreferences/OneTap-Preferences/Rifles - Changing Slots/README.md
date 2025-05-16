@@ -1,0 +1,1 @@
+This version of Onetaps is changing weapons every weapon fire so thanks to that players cannot hold LMB and shoot each time they have a bullet (full auto)

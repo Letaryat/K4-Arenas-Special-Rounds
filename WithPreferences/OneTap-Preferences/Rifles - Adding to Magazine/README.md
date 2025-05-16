@@ -1,0 +1,1 @@
+This version of Onetaps allows players to use LMB and shoot "full auto"
