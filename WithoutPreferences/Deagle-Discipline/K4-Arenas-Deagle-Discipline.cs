@@ -76,11 +76,15 @@ public class PluginK4ArenaOnlyHS : BasePlugin
 
         if (!t1!.Contains(shooter) && !t2!.Contains(shooter)) return HookResult.Continue;
 
-
         var slot = shooter.Slot;
 
         var pawn = shooter.PlayerPawn.Value;
-        if (pawn == null) return HookResult.Continue;
+        if (pawn == null ) return HookResult.Continue;
+
+        if (pawn.WeaponServices == null) return HookResult.Continue;
+        var weapon = pawn.WeaponServices.ActiveWeapon.Value;
+        if (weapon == null || !weapon.IsValid) return HookResult.Continue;
+        if (weapon.DesignerName != null && weapon.DesignerName.Contains("knife", StringComparison.OrdinalIgnoreCase)) return HookResult.Continue;
 
         var minusHP = 15;
 
