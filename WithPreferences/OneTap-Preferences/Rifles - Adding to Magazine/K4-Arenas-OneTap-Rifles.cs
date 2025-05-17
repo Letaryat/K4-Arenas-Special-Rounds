@@ -33,7 +33,7 @@ public class PluginK4ArenaOnlyHS : BasePlugin
 
         if (checkAPI != null)
         {
-            RoundTypeID = checkAPI.AddSpecialRound("Onetaps Rifles", 1, true, RoundStart, RoundEnd);
+            RoundTypeID = checkAPI.AddSpecialRound("Onetaps Magazine", 1, true, RoundStart, RoundEnd);
             RegisterEventHandler<EventWeaponFire>(OnWeaponFire, HookMode.Pre);
             RegisterEventHandler<EventItemEquip>(OnWeaponEquip, HookMode.Pre);
         }

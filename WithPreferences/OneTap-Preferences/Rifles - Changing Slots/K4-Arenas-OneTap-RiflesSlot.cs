@@ -31,7 +31,7 @@ public class PluginK4_Arenas_OneTap : BasePlugin
         checkApi = checkAPI;
         if (checkAPI != null)
         {
-            RoundTypeID = checkAPI.AddSpecialRound("OneTapTest", 1, true, RoundStart, RoundEnd);
+            RoundTypeID = checkAPI.AddSpecialRound("OneTapSlotChange", 1, true, RoundStart, RoundEnd);
         }
         else
         {
@@ -138,7 +138,11 @@ public class PluginK4_Arenas_OneTap : BasePlugin
             if (enemy != null)
             {
                 RemoveAllWeapons(shooter);
-                GiveWeaponToPlayer(enemy);
+                AddTimer(0.15f, () =>
+                {
+                    GiveWeaponToPlayer(enemy);
+                });
+                
             }
         }
         else if (t2.TryGetValue(shooter, out shooterInfo))
@@ -147,7 +151,10 @@ public class PluginK4_Arenas_OneTap : BasePlugin
             if (enemy != null)
             {
                 RemoveAllWeapons(shooter);
-                GiveWeaponToPlayer(enemy);
+                AddTimer(0.15f, () =>
+                {
+                    GiveWeaponToPlayer(enemy);
+                });
             }
         }
 
