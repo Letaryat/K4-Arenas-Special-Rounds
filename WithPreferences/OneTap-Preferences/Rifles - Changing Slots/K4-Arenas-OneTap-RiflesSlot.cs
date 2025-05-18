@@ -10,10 +10,10 @@ using Microsoft.Extensions.Logging;
 using System;
 
 
-namespace K4_Arenas_OneTap;
+namespace K4_Arenas_OneTapSlot;
 
 [MinimumApiVersion(205)]
-public class PluginK4_Arenas_OneTap : BasePlugin
+public class PluginK4_Arenas_OneTapSlot : BasePlugin
 {
     public static int RoundTypeID { get; private set; } = -1;
     public override string ModuleName => "K4-Arenas Addon - OneTap Rifles";

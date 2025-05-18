@@ -9,10 +9,10 @@ using K4ArenaSharedApi;
 using Microsoft.Extensions.Logging;
 using System.Numerics;
 
-namespace K4ArenaOnlyHS;
+namespace K4ArenaFlyingScouts;
 
 [MinimumApiVersion(205)]
-public class PluginK4ArenaOnlyHS : BasePlugin
+public class PluginK4ArenaFlyingScouts : BasePlugin
 {
     public static int RoundTypeID { get; private set; } = -1;
     public override string ModuleName => "K4-Arenas Addon - Flying scouts";

@@ -8,10 +8,10 @@ using CounterStrikeSharp.API.Modules.Utils;
 using K4ArenaSharedApi;
 using Microsoft.Extensions.Logging;
 
-namespace K4ArenaNades;
+namespace K4ArenaPanzer;
 
 [MinimumApiVersion(205)]
-public class PluginK4ArenaNades : BasePlugin
+public class PluginK4ArenaPanzer : BasePlugin
 {
     public static int RoundTypeID { get; private set; } = -1;
     public override string ModuleName => "K4-Arenas Addon - Nades";

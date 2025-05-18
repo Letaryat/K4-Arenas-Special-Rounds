@@ -11,10 +11,10 @@ using System.Drawing;
 using System.Numerics;
 using static System.Formats.Asn1.AsnWriter;
 
-namespace K4ArenaOnlyHS;
+namespace K4ArenaGnomePreference;
 
 [MinimumApiVersion(205)]
-public class PluginK4ArenaOnlyHS : BasePlugin
+public class PluginK4ArenaGnomePreference : BasePlugin
 {
     public static int RoundTypeID { get; private set; } = -1;
     public override string ModuleName => "K4-Arenas Addon - Gnome";

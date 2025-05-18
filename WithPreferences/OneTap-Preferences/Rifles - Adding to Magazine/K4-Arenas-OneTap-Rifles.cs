@@ -9,7 +9,7 @@ using K4ArenaSharedApi;
 using Microsoft.Extensions.Logging;
 using System.Numerics;
 
-namespace K4ArenaOnlyHS;
+namespace K4ArenaOneTapMagazine;
 
 [MinimumApiVersion(205)]
 public class PlayerInfo
@@ -17,7 +17,7 @@ public class PlayerInfo
     public CCSPlayerController? controller { get; set; }
     public int? placement { get; set; }
 }
-public class PluginK4ArenaOnlyHS : BasePlugin
+public class PluginK4ArenaOneTapMagazine : BasePlugin
 {
     public static int RoundTypeID { get; private set; } = -1;
     public override string ModuleName => "K4-Arenas Addon - Onetaps rilfes";

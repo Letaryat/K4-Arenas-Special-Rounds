@@ -7,10 +7,10 @@ using CounterStrikeSharp.API.Modules.Entities.Constants;
 using K4ArenaSharedApi;
 using Microsoft.Extensions.Logging;
 
-namespace K4ArenaOnlyHS;
+namespace K4ArenaOnlyHSAK;
 
 [MinimumApiVersion(205)]
-public class PluginK4ArenaOnlyHS : BasePlugin
+public class PluginK4ArenaOnlyHSAK : BasePlugin
 {
     public static int RoundTypeID { get; private set; } = -1;
     public override string ModuleName => "K4-Arenas Addon - OnlyHS-AK47";

@@ -8,10 +8,10 @@ using K4ArenaSharedApi;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
-namespace K4ArenaOnlyHS;
+namespace K4ArenaDeagleDiscipline;
 
 [MinimumApiVersion(205)]
-public class PluginK4ArenaOnlyHS : BasePlugin
+public class PluginK4ArenaDeagleDiscipline : BasePlugin
 {
     public static int RoundTypeID { get; private set; } = -1;
     public override string ModuleName => "K4-Arenas Addon - Deagle-Discipline";
@@ -52,18 +52,21 @@ public class PluginK4ArenaOnlyHS : BasePlugin
     {
         if (team1 == null || team2 == null) { return; }
 
-        foreach(var p in team1){
+        playerHitMap.Clear();
+
+        foreach (var p in team1)
+        {
             p.RemoveWeapons();
             p.GiveNamedItem(CsItem.Knife);
             p.GiveNamedItem(CsItem.Deagle);
-            playerHitMap.Add(p.Slot, true);
+            playerHitMap.TryAdd(p.Slot, true);
             t1!.Add(p);
         }
         foreach(var p in team2){
             p.RemoveWeapons();
             p.GiveNamedItem(CsItem.Knife);
             p.GiveNamedItem(CsItem.Deagle);
-            playerHitMap.Add(p.Slot, true);
+            playerHitMap.TryAdd(p.Slot, true);
             t2!.Add(p);
         }
     }
